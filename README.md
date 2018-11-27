@@ -11,6 +11,7 @@ CSS笔记
 * [元素水平垂直居中](#元素水平垂直居中)
 * [盒子横向排序不换行](#盒子横向排序不换行)
 * [BFC](#bfc)
+* [Sass/Scss和Less区别](Sass/Scss和Less区别)
 
 ## 盒模型
 包括 margin border padding content
@@ -271,3 +272,281 @@ box-shadow: h-shadow v-shadow blur spread color inset;
 > 
 > 实现两列自适应布局
 		
+## Sass/Scss和Less区别
+#### Sass/Scss
+>[Sass中文文档](https://www.css88.com/doc/sass/#features)
+>
+> CSS开发工具，提供许多简便写法（如变量、嵌套、继承、Mixin、函数、条件、循环语句），使得CSS开发变得简单、可维护
+> 
+> Sass是Ruby语言写的
+> 
+> Scss是Sass3引入的新语法，完全兼容CSS3，用 { } 取代了原来的缩进
+	
+	// Sass 代码
+	#sidebar
+		width: 30%
+		background-color: #faa
+  	
+  	// SCSS语法
+  	#sidebar {
+		width: 30%;
+		background-color: #faa;
+	}
+
+#### Less
+>[Less中文文档](https://www.css88.com/doc/sass/#features)
+>
+> CSS预处理语言，将CSS赋予了动态语言的特性，如变量、继承、运算、函数等，即可在客户端运行，也可在服务端运行（借助Node.js）
+> 
+> 典型框架Bootstrap就是采用LESS做底层语言的 
+
+### 区别
+> [关于Stylus三者区别](https://www.w3cplus.com/css/sass-vs-less-vs-stylus-a-preprocessor-shootout.html) 以下是Sass、Less区别
+
+1、变量符不同，Less是@；Scss是$，和字符串一起使用时需要加#{}
+	
+	// Less
+	@mySelector: banner;
+	.@{mySelector} {
+	  font-weight: bold;
+	  line-height: 40px;
+	  margin: 0 auto;
+	}
+	
+	// Sass
+	$side : left;
+	.rounded {
+		border-#{$side}-radius: 5px;
+	}
+
+2、变量作用域不同，Less逐级查找，Sass不存在全局变量概念（相同名字就会被覆盖）
+	
+	// Less
+	@color: #00c;  // 蓝色
+	#header {
+	  @color: #c00;  // 红色
+	  border: 1px solid @color;
+	}
+	#footer {
+	  border: 1px solid @color;
+	}
+	
+	// Less编译后
+	#header{border:1px solid #cc0000;}  // 红
+	#footer{border:1px solid #0000cc;}  // 蓝
+	
+	// Sass
+	$color: #00c;  // 蓝色
+	
+	#header {
+	  $color: #c00;  // 红色
+	  border: 1px solid $color; 
+	}
+	#footer {
+	  border: 1px solid $color;
+	}
+	
+	// Sass编译后
+	#header{border:1px solid #c00}  // 红
+	#footer{border:1px solid #c00}  // 红
+
+3、	Sass支持条件语句if else、for循环、while循环，Less不支持
+	
+	// if 
+	p {
+		@if 1 + 1 == 2 { border: 1px solid; }
+		@if 5 < 3 { border: 2px dotted; }
+	}
+	@if lightness($color) > 30% {
+		background-color: #000;
+	} @else {
+		background-color: #fff;
+	}
+	
+	// for
+	@for $i from 1 to 10 {
+		.border-#{$i} {
+			border: #{$i}px solid blue;
+		}
+	}
+	
+	// while循环
+	$i: 6;
+	@while $i > 0 {
+		.item-#{$i} { width: 2em * $i; }
+		$i: $i - 2;
+	}
+	
+	// each
+	@each $member in a, b, c, d {
+		.#{$member} {
+			background-image: url("/image/#{$member}.jpg");
+		}
+	}
+4、输出设置，Sass有4种输出设置，Less没有输出选项	
+> `nested` 嵌套缩进的css代码，默认 
+	
+	#main {
+	  color: #fff;
+	  background-color: #000; }
+	  #main p {
+	    width: 10em; }
+	
+	.huge {
+	  font-size: 10em;
+	  font-weight: bold;
+	  text-decoration: underline; } 
+	  
+> `expanded` 展开的多行css代码，类似手写的CSS代码
+	
+	#main {
+	  color: #fff;
+	  background-color: #000;
+	}
+	#main p {
+	  width: 10em;
+	}
+	
+	.huge {
+	  font-size: 10em;
+	  font-weight: bold;
+	  text-decoration: underline;
+	}
+		 
+> `compact` 紧凑格式的css代码，每个选择器占一行
+	
+	#main { color: #fff; background-color: #000; }
+	#main p { width: 10em; }
+	
+	.huge { font-size: 10em; font-weight: bold; text-decoration: underline; }
+	 
+> `compressed` 压缩后的css代码，只显示一行
+	
+	#main{color:#fff;background-color:#000}#main p{width:10em}.huge{font-size:10em;font-weight:bold;text-decoration:underline}
+
+
+5、实现方式不同，Less是基于JavaScript的在客户端处理，安装的时候用npm，Sass是基于ruby在服务器处理
+
+6、Mixin混合定义、调用不同
+	
+* Sass用 `@mixin` 定义，`@include` 调用
+* Less直接可以定义混合类、id选择器，用 `()` 直接调用（也可不加括号）
+	
+```
+// Sass
+@mixin error($borderWidth: 2px) {
+  border: $borderWidth solid #F00;
+  color: #F00;
+}
+.generic-error {
+  padding: 20px;
+  margin: 4px;
+  @include error();  // 调用error mixins
+}
+.login-error {
+  left: 12px;
+  position: absolute;
+  top: 20px;
+  @include error(5px);  // 调用error mixins，并将参数$borderWidth的值指定为5px
+} 
+	
+// Less
+.error(@borderWidth: 2px) {
+  border: @borderWidth solid #F00;
+  color: #F00;
+}
+.generic-error {
+  padding: 20px;
+  margin: 4px;
+  .error();  // 调用error mixins 
+}
+.login-error {
+  left: 12px;
+  position: absolute;
+  top: 20px;
+  .error(5px);  // 调用error mixins，并将参数$borderWidth的值指定为5px 
+} 
+```	
+	
+7、继承
+ 
+ * Sass使用 `@extend` 类名继承，选择器继承，将有公共样式的选择器放在一起，
+ * Less直接使用类名继承，将混合的样式嵌套到每个选择器里，缺点是每个选择器会有重复的样式，
+
+```
+// Sass
+.block {
+  margin: 10px 5px;
+  padding: 2px;
+}
+p {
+  @extend .block;  // 继承.block所有样式
+  border: 1px solid #EEE;
+}
+ul, ol {
+  @extend .block;  // 继承.block所有样式
+  color: #333;
+  text-transform: uppercase;
+}
+
+// 编译后的CSS
+.block, p, ul, ol {  // 公共样式的选择器
+  margin: 10px 5px;
+  padding: 2px;
+}
+p {
+  border: 1px solid #EEE;
+}
+ul, ol {
+  color: #333;
+  text-transform: uppercase;
+}  
+
+// Less
+.block {
+  margin: 10px 5px;
+  padding: 2px;
+}
+p {
+  .block;  // 继承.block所有样式
+  border: 1px solid #EEE;
+}
+ul, ol {
+  .block;  // 继承.block所有样式
+  color: #333;
+  text-transform: uppercase;
+} 
+
+// 编译后的CSS
+.block {  // ❗️选择器没有变多，样式插入到下面的选择器中
+  margin: 10px 5px;
+  padding: 2px;
+}
+p {
+  margin: 10px 5px;
+  padding: 2px;
+  border: 1px solid #EEE;
+}
+ul, ol {
+  margin: 10px 5px;
+  padding: 2px;
+  color: #333;
+  text-transform: uppercase;
+}
+``` 
+
+
+	
+
+	
+	
+	
+
+	
+
+	
+
+	
+
+
+	
