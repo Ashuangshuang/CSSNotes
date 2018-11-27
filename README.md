@@ -11,7 +11,7 @@ CSS笔记
 * [元素水平垂直居中](#元素水平垂直居中)
 * [盒子横向排序不换行](#盒子横向排序不换行)
 * [BFC](#bfc)
-* [Sass/Scss和Less区别](Sass/Scss和Less区别)
+* [Sass Scss和Less区别](#sass-scss和less区别)
 
 ## 盒模型
 包括 margin border padding content
@@ -272,7 +272,7 @@ box-shadow: h-shadow v-shadow blur spread color inset;
 > 
 > 实现两列自适应布局
 		
-## Sass/Scss和Less区别
+## Sass Scss和Less区别
 #### Sass/Scss
 >[Sass中文文档](https://www.css88.com/doc/sass/#features)
 >
